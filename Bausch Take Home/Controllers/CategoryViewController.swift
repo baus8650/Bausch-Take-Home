@@ -12,10 +12,22 @@ class CategoryViewController: UITableViewController {
     var categories = [String]()
     var meals = [[MealsInCategory]]()
     
+    var indicator = UIActivityIndicatorView()
+
+    func activityIndicator() {
+        indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        indicator.style = UIActivityIndicatorView.Style.large
+        indicator.center = self.view.center
+        self.view.addSubview(indicator)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Recipe Collection"
+        activityIndicator()
+        indicator.startAnimating()
+
 
         let semaphore = DispatchSemaphore(value: 1)
         let queue = DispatchQueue.global()
@@ -36,6 +48,8 @@ class CategoryViewController: UITableViewController {
             semaphore.wait()
             self.tableView.reloadData()
             semaphore.signal()
+            self.indicator.stopAnimating()
+            self.indicator.hidesWhenStopped = true
         }
         
     }
@@ -89,6 +103,8 @@ class CategoryViewController: UITableViewController {
         present(ac,animated: true)
     }
     
+    
+    
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -115,7 +131,7 @@ class CategoryViewController: UITableViewController {
         guard let header = view as? UITableViewHeaderFooterView else { return }
         header.textLabel?.textColor = UIColor(named: "default")
         header.textLabel?.text = header.textLabel?.text?.capitalized
-        header.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        header.textLabel?.font = UIFont.boldSystemFont(ofSize: 22)
         header.textLabel?.frame = header.bounds
     }
     

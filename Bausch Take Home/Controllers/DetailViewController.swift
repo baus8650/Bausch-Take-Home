@@ -10,16 +10,28 @@ import UIKit
 class DetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     
+    @IBOutlet var ingredientsLabel: UILabel!
+    @IBOutlet var instructionsLabel: UILabel!
     
     @IBOutlet var mealImage: UIImageView!
     
     @IBOutlet var instructionsText: UITextView!
     @IBOutlet var ingredientsTable: UITableView!
     
+    
     var nameLabel: String?
     var mealID: String?
     var recipe: [Int: [String: String]]?
     var urlString: String?
+    
+    var mealIndicator = UIActivityIndicatorView()
+
+    func activityIndicator() {
+        mealIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        mealIndicator.style = UIActivityIndicatorView.Style.large
+        mealIndicator.center = self.view.center
+        self.view.addSubview(mealIndicator)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +39,9 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         let queue = DispatchQueue.global()
         ingredientsTable.dataSource = self
         ingredientsTable.delegate = self
+        
+        activityIndicator()
+        mealIndicator.startAnimating()
         
         queue.async {
             if self.urlString == nil {
@@ -54,12 +69,17 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             recipe = jsonMeal.meals[0].generateRecipe()
             
             DispatchQueue.main.async {
+                self.mealIndicator.stopAnimating()
+                self.mealIndicator.hidesWhenStopped = true
                 if let imageData = try? Data(contentsOf: imageURL!) {
                     self.mealImage.image = UIImage(data: imageData)
                 }
                 self.navigationItem.title = name
                 self.instructionsText.text = instructions
                 self.ingredientsTable.reloadData()
+                self.instructionsLabel.text = "Instructions"
+                self.ingredientsLabel.text = "Ingredients"
+                
             }
         }
         
