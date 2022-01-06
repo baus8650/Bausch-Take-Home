@@ -7,8 +7,17 @@
 
 import UIKit
 
-class DetailViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class DetailViewController: UIViewController {
     
+    // MARK: - Properties
+    var nameLabel: String?
+    var mealID: String?
+    var recipe: [Int: [String: String]]?
+    var urlString: String?
+    
+    var indicator = UIActivityIndicatorView()
+    
+    // MARK: - IBOutlets
     
     @IBOutlet var ingredientsLabel: UILabel!
     @IBOutlet var instructionsLabel: UILabel!
@@ -18,20 +27,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet var instructionsText: UITextView!
     @IBOutlet var ingredientsTable: UITableView!
     
-    
-    var nameLabel: String?
-    var mealID: String?
-    var recipe: [Int: [String: String]]?
-    var urlString: String?
-    
-    var mealIndicator = UIActivityIndicatorView()
-
-    func activityIndicator() {
-        mealIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-        mealIndicator.style = UIActivityIndicatorView.Style.large
-        mealIndicator.center = self.view.center
-        self.view.addSubview(mealIndicator)
-    }
+    // MARK: - Lifecycle Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,7 +37,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         ingredientsTable.delegate = self
         
         activityIndicator()
-        mealIndicator.startAnimating()
+        indicator.startAnimating()
         
         queue.async {
             if self.urlString == nil {
@@ -49,6 +45,15 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             }
             self.fetchMealJSON(with: self.urlString!)
         }
+    }
+    
+    // MARK: - Helper Properties
+    
+    func activityIndicator() {
+        indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        indicator.style = UIActivityIndicatorView.Style.large
+        indicator.center = self.view.center
+        self.view.addSubview(indicator)
     }
     
     func fetchMealJSON(with urlString: String) {
@@ -69,8 +74,8 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
             recipe = jsonMeal.meals[0].generateRecipe()
             
             DispatchQueue.main.async {
-                self.mealIndicator.stopAnimating()
-                self.mealIndicator.hidesWhenStopped = true
+                self.indicator.stopAnimating()
+                self.indicator.hidesWhenStopped = true
                 if let imageData = try? Data(contentsOf: imageURL!) {
                     self.mealImage.image = UIImage(data: imageData)
                 }
@@ -84,6 +89,12 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         }
         
     }
+    
+}
+
+// MARK: - Extensions
+
+extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return recipe?.count ?? 0

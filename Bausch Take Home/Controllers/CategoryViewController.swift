@@ -8,18 +8,17 @@
 import UIKit
 
 class CategoryViewController: UITableViewController {
+    
+    // MARK: - Properties
 
     var categories = [String]()
     var meals = [[MealsInCategory]]()
-    
     var indicator = UIActivityIndicatorView()
+    
+    let semaphore = DispatchSemaphore(value: 1)
+    let queue = DispatchQueue.global()
 
-    func activityIndicator() {
-        indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-        indicator.style = UIActivityIndicatorView.Style.large
-        indicator.center = self.view.center
-        self.view.addSubview(indicator)
-    }
+    // MARK: - Lifecycle Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,31 +26,36 @@ class CategoryViewController: UITableViewController {
         title = "Recipe Collection"
         activityIndicator()
         indicator.startAnimating()
-
-
-        let semaphore = DispatchSemaphore(value: 1)
-        let queue = DispatchQueue.global()
         
         queue.async {
-            semaphore.wait()
+            self.semaphore.wait()
             self.fetchCategoryJSON()
-            semaphore.signal()
+            self.semaphore.signal()
         }
         
         queue.async {
-            semaphore.wait()
+            self.semaphore.wait()
             self.fetchMealsJSON(for: self.categories)
-            semaphore.signal()
+            self.semaphore.signal()
         }
         
         DispatchQueue.main.async {
-            semaphore.wait()
+            self.semaphore.wait()
             self.tableView.reloadData()
-            semaphore.signal()
+            self.semaphore.signal()
             self.indicator.stopAnimating()
             self.indicator.hidesWhenStopped = true
         }
         
+    }
+    
+    // MARK: - Helper Functions
+    
+    func activityIndicator() {
+        indicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        indicator.style = UIActivityIndicatorView.Style.large
+        indicator.center = self.view.center
+        self.view.addSubview(indicator)
     }
     
     func fetchCategoryJSON() {
@@ -65,6 +69,13 @@ class CategoryViewController: UITableViewController {
         }
         performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
     }
+    
+    func parseCategory(json: Data) {
+            let decoder = JSONDecoder()
+            if let jsonCategory = try? decoder.decode(Categories.self, from: json) {
+                categories = jsonCategory.categories.map { $0.strCategory }.sorted()
+            }
+        }
     
     func fetchMealsJSON(for categories: [String]) {
         var urlString: String
@@ -80,18 +91,11 @@ class CategoryViewController: UITableViewController {
         }
     }
     
-    func parseCategory(json: Data) {
-        let decoder = JSONDecoder()
-        if let jsonCategory = try? decoder.decode(Categories.self, from: json) {
-            categories = jsonCategory.categories.map { $0.strCategory }.sorted()
-        }
-    }
-    
     func parseMeal(json: Data) {
         let decoder = JSONDecoder()
         if let jsonMeal = try? decoder.decode(Meals.self, from: json) {
             let localMeal = jsonMeal.meals
-            let sorted = localMeal.sorted{ $0.strMeal < $1.strMeal } // Fairly certain meals are loaded alphabetically to begin with, but just to be safe
+            let sorted = localMeal.sorted{ $0.strMeal < $1.strMeal }
             meals.append(sorted)
             
         }
@@ -102,8 +106,6 @@ class CategoryViewController: UITableViewController {
         ac.addAction(UIAlertAction(title: "OK", style: .default))
         present(ac,animated: true)
     }
-    
-    
     
     // MARK: - Table view data source
 
@@ -135,11 +137,11 @@ class CategoryViewController: UITableViewController {
         header.textLabel?.frame = header.bounds
     }
     
-        override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-            return 40
-        }
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 40
+    }
     
-    // Instead of segueing to a new view controller, can you work in a delegate pattern to reload the data instead of presenting a new vc?
+    // MARK: - Navigation
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ListToDetail" {
