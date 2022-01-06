@@ -14,6 +14,8 @@ class CategoryViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        title = "Recipe Collection"
 
         let semaphore = DispatchSemaphore(value: 1)
         let queue = DispatchQueue.global()
@@ -108,6 +110,20 @@ class CategoryViewController: UITableViewController {
         cell.titleLabel.text = title
         return cell
     }
+    
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        guard let header = view as? UITableViewHeaderFooterView else { return }
+        header.textLabel?.textColor = UIColor(named: "default")
+        header.textLabel?.text = header.textLabel?.text?.capitalized
+        header.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        header.textLabel?.frame = header.bounds
+    }
+    
+        override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+            return 40
+        }
+    
+    // Instead of segueing to a new view controller, can you work in a delegate pattern to reload the data instead of presenting a new vc?
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ListToDetail" {
