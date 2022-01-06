@@ -113,7 +113,8 @@ class CategoryViewController: UITableViewController {
         if segue.identifier == "ListToDetail" {
             let detailVC = segue.destination as! DetailViewController
             let indexPath = tableView.indexPathForSelectedRow!
-            detailVC.mealID = meals[indexPath.section][indexPath.row].idMeal
+            let mealID = meals[indexPath.section][indexPath.row].idMeal
+            detailVC.urlString = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=\(mealID)"
         }
     }
 

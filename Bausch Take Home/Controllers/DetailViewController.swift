@@ -19,6 +19,7 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     var nameLabel: String?
     var mealID: String?
     var recipe: [Int: [String: String]]?
+    var urlString: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,13 +29,14 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
         ingredientsTable.delegate = self
         
         queue.async {
-            self.fetchMealJSON()
+            if self.urlString == nil {
+                self.urlString = "https://www.themealdb.com/api/json/v1/1/random.php"
+            }
+            self.fetchMealJSON(with: self.urlString!)
         }
     }
     
-    func fetchMealJSON() {
-        var urlString: String
-        urlString = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=\(mealID!)"
+    func fetchMealJSON(with urlString: String) {
         if let url = URL(string: urlString) {
             if let data = try? Data(contentsOf: url) {
                 parseMeal(json: data)
@@ -64,7 +66,6 @@ class DetailViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("testing: ",recipe?.count ?? 0, recipe)
         return recipe?.count ?? 0
     }
     
