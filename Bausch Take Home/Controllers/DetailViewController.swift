@@ -14,6 +14,7 @@ class DetailViewController: UIViewController {
     var mealID: String?
     var recipe: [Int: [String: String]]?
     var urlString: String?
+    var sectionTitle = ""
     
     var indicator = UIActivityIndicatorView()
     
@@ -35,6 +36,9 @@ class DetailViewController: UIViewController {
         
         activityIndicator()
         indicator.startAnimating()
+        
+        instructionsText.textContainerInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        instructionsText.layer.cornerRadius = 10
 
         let queue = DispatchQueue.global()
         
@@ -90,7 +94,7 @@ class DetailViewController: UIViewController {
                 self.navigationItem.title = name
                 self.instructionsText.text = instructions
                 self.instructionsLabel.text = "Instructions"
-                self.ingredientsLabel.text = "Ingredients"
+                self.sectionTitle = "Ingredients"
                 self.ingredientsTable.reloadData()
             }
             
@@ -104,6 +108,16 @@ class DetailViewController: UIViewController {
 
 extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        
+        return 1
+        
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionTitle
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return recipe?.count ?? 0
@@ -113,11 +127,20 @@ extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecipeCell", for: indexPath) as! RecipeTableViewCell
-        
         cell.ingredientLabel.text = recipe?[indexPath.row+1]?.keys.first
         cell.measurementLabel.text = recipe?[indexPath.row+1]?.values.first
         
         return cell
+        
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        
+        guard let header = view as? UITableViewHeaderFooterView else { return }
+        header.textLabel?.textColor = UIColor(named: "default")
+        header.textLabel?.text = header.textLabel?.text?.capitalized
+        header.textLabel?.font = UIFont.boldSystemFont(ofSize: 22)
+        header.textLabel?.frame = header.bounds
         
     }
     

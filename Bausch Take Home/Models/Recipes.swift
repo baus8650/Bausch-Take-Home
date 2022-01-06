@@ -22,7 +22,6 @@ struct MealDetail: Decodable {
 struct Category: Decodable {
     var strCategory: String
     var strCategoryThumb: String
-    var strCategoryDescription: String
 }
 
 struct MealsInCategory: Decodable {

@@ -17,7 +17,25 @@
 		221D48BD2785EE910017D7CC /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221D48BC2785EE910017D7CC /* CategoryViewController.swift */; };
 		2298EC7427863C3A00AF20F8 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298EC7327863C3A00AF20F8 /* DetailViewController.swift */; };
 		2298EC762786712A00AF20F8 /* RecipeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298EC752786712A00AF20F8 /* RecipeTableViewCell.swift */; };
+		2298EC8F2787815F00AF20F8 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298EC8E2787815F00AF20F8 /* Tests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		2298EC832787810200AF20F8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 221D48962785E5B40017D7CC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 221D489D2785E5B40017D7CC;
+			remoteInfo = "Bausch Take Home";
+		};
+		2298EC902787815F00AF20F8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 221D48962785E5B40017D7CC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 221D489D2785E5B40017D7CC;
+			remoteInfo = "Bausch Take Home";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		221D489E2785E5B40017D7CC /* Bausch Take Home.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Bausch Take Home.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -32,10 +50,27 @@
 		221D48BC2785EE910017D7CC /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 		2298EC7327863C3A00AF20F8 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		2298EC752786712A00AF20F8 /* RecipeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeTableViewCell.swift; sourceTree = "<group>"; };
+		2298EC7F2787810200AF20F8 /* Bausch Take HomeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Bausch Take HomeTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2298EC8C2787815F00AF20F8 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2298EC8E2787815F00AF20F8 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		221D489B2785E5B40017D7CC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2298EC7C2787810200AF20F8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2298EC892787815F00AF20F8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -49,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				221D48A02785E5B40017D7CC /* Bausch Take Home */,
+				2298EC8D2787815F00AF20F8 /* Tests */,
 				221D489F2785E5B40017D7CC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -57,6 +93,8 @@
 			isa = PBXGroup;
 			children = (
 				221D489E2785E5B40017D7CC /* Bausch Take Home.app */,
+				2298EC7F2787810200AF20F8 /* Bausch Take HomeTests.xctest */,
+				2298EC8C2787815F00AF20F8 /* Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -103,6 +141,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		2298EC8D2787815F00AF20F8 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				2298EC8E2787815F00AF20F8 /* Tests.swift */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -123,6 +169,42 @@
 			productReference = 221D489E2785E5B40017D7CC /* Bausch Take Home.app */;
 			productType = "com.apple.product-type.application";
 		};
+		2298EC7E2787810200AF20F8 /* Bausch Take HomeTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2298EC852787810200AF20F8 /* Build configuration list for PBXNativeTarget "Bausch Take HomeTests" */;
+			buildPhases = (
+				2298EC7B2787810200AF20F8 /* Sources */,
+				2298EC7C2787810200AF20F8 /* Frameworks */,
+				2298EC7D2787810200AF20F8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2298EC842787810200AF20F8 /* PBXTargetDependency */,
+			);
+			name = "Bausch Take HomeTests";
+			productName = "Bausch Take HomeTests";
+			productReference = 2298EC7F2787810200AF20F8 /* Bausch Take HomeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		2298EC8B2787815F00AF20F8 /* Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2298EC922787815F00AF20F8 /* Build configuration list for PBXNativeTarget "Tests" */;
+			buildPhases = (
+				2298EC882787815F00AF20F8 /* Sources */,
+				2298EC892787815F00AF20F8 /* Frameworks */,
+				2298EC8A2787815F00AF20F8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				2298EC912787815F00AF20F8 /* PBXTargetDependency */,
+			);
+			name = Tests;
+			productName = Tests;
+			productReference = 2298EC8C2787815F00AF20F8 /* Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -135,6 +217,14 @@
 				TargetAttributes = {
 					221D489D2785E5B40017D7CC = {
 						CreatedOnToolsVersion = 13.2.1;
+					};
+					2298EC7E2787810200AF20F8 = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = 221D489D2785E5B40017D7CC;
+					};
+					2298EC8B2787815F00AF20F8 = {
+						CreatedOnToolsVersion = 13.2.1;
+						TestTargetID = 221D489D2785E5B40017D7CC;
 					};
 				};
 			};
@@ -152,6 +242,8 @@
 			projectRoot = "";
 			targets = (
 				221D489D2785E5B40017D7CC /* Bausch Take Home */,
+				2298EC7E2787810200AF20F8 /* Bausch Take HomeTests */,
+				2298EC8B2787815F00AF20F8 /* Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -164,6 +256,20 @@
 				221D48AE2785E5B50017D7CC /* LaunchScreen.storyboard in Resources */,
 				221D48AB2785E5B50017D7CC /* Assets.xcassets in Resources */,
 				221D48A92785E5B40017D7CC /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2298EC7D2787810200AF20F8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2298EC8A2787815F00AF20F8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,7 +290,35 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2298EC7B2787810200AF20F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2298EC882787815F00AF20F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2298EC8F2787815F00AF20F8 /* Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		2298EC842787810200AF20F8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 221D489D2785E5B40017D7CC /* Bausch Take Home */;
+			targetProxy = 2298EC832787810200AF20F8 /* PBXContainerItemProxy */;
+		};
+		2298EC912787815F00AF20F8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 221D489D2785E5B40017D7CC /* Bausch Take Home */;
+			targetProxy = 2298EC902787815F00AF20F8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		221D48A72785E5B40017D7CC /* Main.storyboard */ = {
@@ -378,6 +512,78 @@
 			};
 			name = Release;
 		};
+		2298EC862787810200AF20F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 89JNN3239D;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.timbausch.Bausch-Take-HomeTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bausch Take Home.app/Bausch Take Home";
+			};
+			name = Debug;
+		};
+		2298EC872787810200AF20F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 89JNN3239D;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.timbausch.Bausch-Take-HomeTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bausch Take Home.app/Bausch Take Home";
+			};
+			name = Release;
+		};
+		2298EC932787815F00AF20F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 89JNN3239D;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.timbausch.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bausch Take Home.app/Bausch Take Home";
+			};
+			name = Debug;
+		};
+		2298EC942787815F00AF20F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 89JNN3239D;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.timbausch.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Bausch Take Home.app/Bausch Take Home";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -395,6 +601,24 @@
 			buildConfigurations = (
 				221D48B32785E5B50017D7CC /* Debug */,
 				221D48B42785E5B50017D7CC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2298EC852787810200AF20F8 /* Build configuration list for PBXNativeTarget "Bausch Take HomeTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2298EC862787810200AF20F8 /* Debug */,
+				2298EC872787810200AF20F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2298EC922787815F00AF20F8 /* Build configuration list for PBXNativeTarget "Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2298EC932787815F00AF20F8 /* Debug */,
+				2298EC942787815F00AF20F8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

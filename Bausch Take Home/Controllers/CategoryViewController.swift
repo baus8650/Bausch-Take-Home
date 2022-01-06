@@ -31,12 +31,14 @@ class CategoryViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Recipes"
+        navigationItem.title = "Recipes"
         
         activityIndicator()
         indicator.startAnimating()
         searchBar.delegate = self
         isSearching = false
+        
+        self.tableView.keyboardDismissMode = .onDrag
         
         queue.async {
             self.semaphore.wait()
@@ -248,7 +250,12 @@ extension CategoryViewController: UISearchBarDelegate {
         categoryIndices = [Int]()
         searchCategories = [String]()
         searchMeals = [[MealsInCategory]]()
+        
         tableView.reloadData()
         
+    }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
 }
