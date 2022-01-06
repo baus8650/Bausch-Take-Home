@@ -7,31 +7,31 @@
 
 import Foundation
 
-struct Categories: Codable {
+struct Categories: Decodable {
     var categories: [Category]
 }
 
-struct Meals: Codable {
+struct Meals: Decodable {
     var meals: [MealsInCategory]
 }
 
-struct MealDetail: Codable {
+struct MealDetail: Decodable {
     var meals: [Meal]
 }
 
-struct Category: Codable {
+struct Category: Decodable {
     var strCategory: String
     var strCategoryThumb: String
     var strCategoryDescription: String
 }
 
-struct MealsInCategory: Codable {
+struct MealsInCategory: Decodable {
     var strMeal: String
     var strMealThumb: String
     var idMeal: String
 }
 
-struct Meal: Codable {
+struct Meal: Decodable {
     var idMeal: String
     var strMeal: String
     var strInstructions: String
