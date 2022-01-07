@@ -94,6 +94,7 @@ class DetailViewController: UIViewController {
                 
                 self.navigationItem.title = name
                 self.instructionsText.text = instructions
+                self.instructionsText.backgroundColor = .secondarySystemGroupedBackground
                 self.instructionsLabel.text = "Instructions"
                 self.sectionTitle = "Ingredients"
                 self.ingredientsTable.reloadData()
