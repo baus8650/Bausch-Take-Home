@@ -9,7 +9,7 @@ import Foundation
 
 class NetworkManager {
     
-    func fetchCategoryJSON(completion: @escaping([String]) -> Void) {
+    func fetchCategories(completion: @escaping([String]) -> Void) {
         
         let urlSession = URLSession.shared
         let urlString: String
@@ -34,7 +34,7 @@ class NetworkManager {
         fetch.resume()
     }
     
-    func fetchMealsJSON(with categories: [String], completion: @escaping ([[MealsInCategory]]) -> Void) {
+    func fetchMealsByCategory(with categories: [String], completion: @escaping ([[MealsInCategory]]) -> Void) {
         
         let urlSession = URLSession.shared
         
@@ -72,7 +72,7 @@ class NetworkManager {
     }
     
     
-    func fetchMealJSON(with urlString: String, completion: @escaping (Meal) -> Void) {
+    func fetchMealDetail(with urlString: String, completion: @escaping (Meal) -> Void) {
         
         let urlSession = URLSession.shared
         

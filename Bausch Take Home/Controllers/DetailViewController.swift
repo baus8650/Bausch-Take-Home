@@ -34,7 +34,6 @@ class DetailViewController: UIViewController {
         }
     }
     
-    var nameLabel: String?
     var recipe: [Int: [String: String]]?
     var urlString: String?
     var sectionTitle = ""
@@ -69,7 +68,7 @@ class DetailViewController: UIViewController {
                 self.urlString = "https://www.themealdb.com/api/json/v1/1/random.php"
             }
             
-            self.networkManager.fetchMealJSON(with: self.urlString!) { meal in
+            self.networkManager.fetchMealDetail(with: self.urlString!) { meal in
                 self.meal = meal
             }
         }

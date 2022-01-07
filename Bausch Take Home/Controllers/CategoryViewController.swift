@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 class CategoryViewController: UITableViewController {
     
     // MARK: - Properties
@@ -15,8 +16,11 @@ class CategoryViewController: UITableViewController {
     
     var categories = [String]() {
         didSet {
-            self.networkManager.fetchMealsJSON(with: self.categories) { meals in
-                self.meals = meals
+            let queue = DispatchQueue.global()
+            queue.async {
+                self.networkManager.fetchMealsByCategory(with: self.categories) { meals in
+                    self.meals = meals
+                }
             }
         }
     }
@@ -55,7 +59,7 @@ class CategoryViewController: UITableViewController {
         
         self.tableView.keyboardDismissMode = .onDrag
         
-        self.networkManager.fetchCategoryJSON(completion: { categories in
+        self.networkManager.fetchCategories(completion: { categories in
             self.categories = categories
         })
         
@@ -133,9 +137,7 @@ class CategoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        
         return 40
-        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -170,11 +172,11 @@ extension CategoryViewController: UISearchBarDelegate {
         searchMeals = [[MealsInCategory]]()
         searchCategories = categories.filter({$0.prefix(searchText.count) == searchText})
         
-        for i in searchCategories {
-            categoryIndices.append(categories.firstIndex(of: i)!)
+        for category in searchCategories {
+            categoryIndices.append(categories.firstIndex(of: category)!)
         }
-        for i in categoryIndices {
-            searchMeals.append(meals[i])
+        for meal in categoryIndices {
+            searchMeals.append(meals[meal])
         }
         
         isSearching = true
