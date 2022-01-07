@@ -13,32 +13,16 @@ class CategoryViewController: UITableViewController {
     
     let networkManager = NetworkManager()
     
-    var categories = [String]() {
-        didSet {
-            DispatchQueue.main.async {
-                print("categories changed", self.categories)
-            }
-        }
-    }
+    var categories = [String]()
     var searchCategories = [String]()
-    var meals = [[MealsInCategory]]() {
-        didSet {
-            DispatchQueue.main.async {
-                print("meals have changed", self.meals)
-            }
-//            DispatchQueue.main.async {
-//                if self.meals.count == self.categories.count {
-                    
-//                    self.tableView.reloadData()
-//                }
-//            }
-        }
-    }
+    var meals = [[MealsInCategory]]()
     var searchMeals = [[MealsInCategory]]()
     var categoryIndices = [Int]()
     var isSearching: Bool?
     var indicator = UIActivityIndicatorView()
     
+    let semaphore = DispatchSemaphore(value: 1)
+    let queue = DispatchQueue.global()
     
     // MARK: - IBOutlets
     
@@ -58,137 +42,30 @@ class CategoryViewController: UITableViewController {
         
         self.tableView.keyboardDismissMode = .onDrag
         
-        let catURL = URL(string: "https://www.themealdb.com/api/json/v1/1/categories.php")!
-        populateMeals(catURL: catURL)
-
-    
-    }
-    // MARK: - TESTING
-    
-    func populateMeals(catURL: URL) {
-        
-        var localCategory: String?
-        
-        networkManager.categoryRequest(with: catURL) { [weak self] result in
-            switch result {
-            case .success(let categories):
-                self?.categories = categories
-                for i in 0..<categories.count {
-                    localCategory = categories[i]
-                    let urlString = "https://www.themealdb.com/api/json/v1/1/filter.php?c=\(localCategory!)"
-                    let url = URL(string: urlString)
-                    self?.networkManager.mealRequest(with: url!, categories: categories) { [weak self] result in
-                        switch result {
-                        case .success(let meals):
-                            self?.meals = meals
-                            if self?.meals.count == self?.categories.count {
-                                DispatchQueue.main.async {
-                                    self?.indicator.stopAnimating()
-                                    self?.indicator.hidesWhenStopped = true
-                                    self?.tableView.reloadData()
-                                }
-                            }
-                        default:
-                            self?.meals = [[MealsInCategory]]()
-                        }
-                    }
-                }
-            default:
-                self?.categories = [String]()
-            }
+        queue.async {
+            self.semaphore.wait()
+            self.categories = self.networkManager.fetchCategoryJSON()
+            self.semaphore.signal()
         }
+        
+        queue.async {
+            self.semaphore.wait()
+            self.meals = self.networkManager.fetchMealsJSON(with: self.categories)
+            self.semaphore.signal()
+        }
+        
+        DispatchQueue.main.async {
+            self.semaphore.wait()
+            self.tableView.reloadData()
+            self.semaphore.signal()
+            self.indicator.stopAnimating()
+            self.indicator.hidesWhenStopped = true
+        }
+        
     }
+    
     
     // MARK: - Helper Functions
-    
-    func performFetching() {
-
-        let semaphore = DispatchSemaphore(value: 0)
-        
-        semaphore.signal()
-            let url = URL(string: "https://www.themealdb.com/api/json/v1/1/categories.php")!
-            self.newFetchCategories(with: url) { [weak self] result in
-                switch result {
-                case .success(let categories):
-                    var localCategory: String
-                    for i in 0..<categories.count {
-                        localCategory = categories[i]
-                        let url = URL(string: "https://www.themealdb.com/api/json/v1/1/filter.php?c=\(localCategory)")
-                        self?.newFetchMeals(with: url!) { [weak self] result in
-                            switch result {
-                            case .success(let meals):
-                                DispatchQueue.main.async {
-                                    self?.meals = meals
-                                }
-                            default:
-                                self?.meals = []
-                            }
-                        }
-                    }
-                    DispatchQueue.main.async{
-                        
-                    }
-                default:
-                    self?.categories = []
-                    
-                }
-            }
-        
-        
-
-    }
-    
-    func newFetchCategories (with url: URL, completion: @escaping(Result<[String], Error>) -> Void) {
-        let fetchCategories = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data {
-                if let jsonCategory = try? JSONDecoder().decode(Categories.self, from: data) {
-                    DispatchQueue.main.async {
-                        self.categories = jsonCategory.categories.map { $0.strCategory }.sorted()
-                        completion(.success(self.categories))
-                    }
-                }
-            } else if let error = error {
-                print("HTTP Request Failed \(error)")
-            }
-        }
-        fetchCategories.resume()
-    }
-    
-    func newFetchMeals (with url: URL, completion: @escaping(Result<[[MealsInCategory]], Error>) -> Void) {
-        let fetchMeals = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let data = data {
-                if let jsonMeal = try? JSONDecoder().decode(Meals.self, from: data) {
-                    let localMeal = jsonMeal.meals
-                    let sorted = localMeal.sorted{ $0.strMeal < $1.strMeal }
-                    self.meals.append(sorted)
-                    print("IN THE FUNCTION \(self.meals.count)")
-                }
-            } else if let error = error {
-                print("HTTP Request Failed \(error)")
-            }
-        }
-        fetchMeals.resume()
-    }
-    
-//    func getCategories(withRequest request: URLRequest, withCompletion completion: @escaping (String?, Error?) -> Void) {
-//        let task = URLSession.shared.dataTask(with: request) { (data: Data?, response: URLResponse?, error: Error?) in
-//            if error != nil {
-//                completion(nil, error)
-//                return
-//            }
-//            else if let data = data {
-//                do {
-//                    guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String:Any] else {completion(nil, nil);return}
-//                    guard let details = json["detail"] as? String else {completion(nil, nil);return}
-//                    completion(details, nil)
-//                }
-//                catch {
-//                    completion(nil, error)
-//                }
-//            }
-//        }
-//        task.resume()
-//    }
     
     func activityIndicator() {
         
@@ -196,66 +73,6 @@ class CategoryViewController: UITableViewController {
         indicator.style = UIActivityIndicatorView.Style.large
         indicator.center = self.view.center
         self.view.addSubview(indicator)
-        
-    }
-    
-    func fetchCategoryJSON() {
-        
-        let urlString: String
-        urlString = "https://www.themealdb.com/api/json/v1/1/categories.php"
-        
-        if let url = URL(string: urlString) {
-            if let data = try? Data(contentsOf: url) {
-                parseCategory(json: data)
-                return
-            }
-        }
-        
-        performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
-    }
-    
-    func parseCategory(json: Data) {
-        
-        let decoder = JSONDecoder()
-        
-        if let jsonCategory = try? decoder.decode(Categories.self, from: json) {
-            categories = jsonCategory.categories.map { $0.strCategory }.sorted()
-        }
-        
-    }
-    
-    func fetchMealsJSON(for categories: [String]) {
-        var urlString: String
-        var localCategory: String
-        
-        for i in 0..<categories.count {
-            localCategory = categories[i]
-            urlString = "https://www.themealdb.com/api/json/v1/1/filter.php?c=\(localCategory)"
-            if let url = URL(string: urlString) {
-                if let data = try? Data(contentsOf: url) {
-                    parseMeal(json: data)
-                }
-            }
-        }
-        
-    }
-    
-    func parseMeal(json: Data) {
-        
-        let decoder = JSONDecoder()
-        if let jsonMeal = try? decoder.decode(Meals.self, from: json) {
-            let localMeal = jsonMeal.meals
-            let sorted = localMeal.sorted{ $0.strMeal < $1.strMeal }
-            meals.append(sorted)
-            
-        }
-    }
-    
-    @objc func showError() {
-        
-        let ac = UIAlertController(title: "Loading error", message: "There was a problem loading the data; please check your connection and try again.", preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "OK", style: .default))
-        present(ac,animated: true)
         
     }
     

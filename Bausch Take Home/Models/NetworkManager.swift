@@ -9,55 +9,50 @@ import Foundation
 
 class NetworkManager {
     
-    var buildMeals = [[MealsInCategory]]()
-    
-    func categoryRequest(with url: URL, completion: @escaping (Result<[String], Error>) -> Void) {
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                print(error)
-                return
-            }
-            
-            guard let data = data else { return }
-            
-            guard let jsonCategory = try? JSONDecoder().decode(Categories.self, from: data) else {
-                return
-            }
-            let categories = jsonCategory.categories.map { $0.strCategory }.sorted()
-            
-            DispatchQueue.main.async {
-                completion(.success(categories))
-            }
-        }
-        task.resume()
-    }
-    
-    func mealRequest (with url: URL, categories: [String], completion: @escaping(Result<[[MealsInCategory]], Error>) -> Void) {
-        let fetchMeals = URLSession.shared.dataTask(with: url) { data, response, error in
-            if let error = error {
-                print(error)
-                return
-            }
-            
-            guard let data = data else { return }
-            
-            guard let jsonMeal = try? JSONDecoder().decode(Meals.self, from: data) else {
-                return
-            }
-            
-            let localMeal = jsonMeal.meals
-            let sorted = localMeal.sorted{ $0.strMeal < $1.strMeal }
-            self.buildMeals.append(sorted)
-            
-            if self.buildMeals.count == categories.count {
-                DispatchQueue.main.async {
-                    completion(.success(self.buildMeals))
+    func fetchCategoryJSON() -> [String] {
+        
+        let urlString: String
+        urlString = "https://www.themealdb.com/api/json/v1/1/categories.php"
+        
+        if let url = URL(string: urlString) {
+            if let data = try? Data(contentsOf: url) {
+                var categories = [String]()
+                let decoder = JSONDecoder()
+                
+                if let jsonCategory = try? decoder.decode(Categories.self, from: data) {
+                    categories = jsonCategory.categories.map { $0.strCategory }.sorted()
+                    return categories
                 }
             }
         }
-        fetchMeals.resume()
+        return []
     }
     
-    
+    func fetchMealsJSON(with categories: [String]) -> [[MealsInCategory]] {
+        var urlString: String
+        var localCategory: String
+        var meals = [[MealsInCategory]]()
+        
+        for i in 0..<categories.count {
+            localCategory = categories[i]
+            urlString = "https://www.themealdb.com/api/json/v1/1/filter.php?c=\(localCategory)"
+            if let url = URL(string: urlString) {
+                if let data = try? Data(contentsOf: url) {
+                    let decoder = JSONDecoder()
+                    if let jsonMeal = try? decoder.decode(Meals.self, from: data) {
+                        let localMeal = jsonMeal.meals
+                        let sorted = localMeal.sorted{ $0.strMeal < $1.strMeal }
+                        meals.append(sorted)
+                        if meals.count == categories.count {
+                            return meals
+                        }
+                    }
+                }
+            }
+        }
+        
+        return [[]]
+        
+    }
     
 }

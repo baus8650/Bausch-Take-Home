@@ -10,6 +10,7 @@ import UIKit
 class DetailViewController: UIViewController {
     
     // MARK: - Properties
+    
     var nameLabel: String?
     var mealID: String?
     var recipe: [Int: [String: String]]?
