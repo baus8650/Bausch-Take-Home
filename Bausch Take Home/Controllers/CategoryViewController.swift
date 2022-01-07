@@ -13,9 +13,22 @@ class CategoryViewController: UITableViewController {
     
     let networkManager = NetworkManager()
     
-    var categories = [String]()
+    var categories = [String]() {
+        didSet {
+            self.networkManager.fetchMealsJSON(with: self.categories) { meals in
+                self.meals = meals
+            }
+        }
+    }
+    
+    var meals = [[MealsInCategory]]() {
+        didSet {
+            self.tableView.reloadData()
+            self.indicator.stopAnimating()
+            self.indicator.hidesWhenStopped = true
+        }
+    }
     var searchCategories = [String]()
-    var meals = [[MealsInCategory]]()
     var searchMeals = [[MealsInCategory]]()
     var categoryIndices = [Int]()
     var isSearching: Bool?
@@ -42,25 +55,9 @@ class CategoryViewController: UITableViewController {
         
         self.tableView.keyboardDismissMode = .onDrag
         
-        queue.async {
-            self.semaphore.wait()
-            self.categories = self.networkManager.fetchCategoryJSON()
-            self.semaphore.signal()
-        }
-        
-        queue.async {
-            self.semaphore.wait()
-            self.meals = self.networkManager.fetchMealsJSON(with: self.categories)
-            self.semaphore.signal()
-        }
-        
-        DispatchQueue.main.async {
-            self.semaphore.wait()
-            self.tableView.reloadData()
-            self.semaphore.signal()
-            self.indicator.stopAnimating()
-            self.indicator.hidesWhenStopped = true
-        }
+        self.networkManager.fetchCategoryJSON(completion: { categories in
+            self.categories = categories
+        })
         
     }
     
