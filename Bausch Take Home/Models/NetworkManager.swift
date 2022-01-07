@@ -34,6 +34,7 @@ class NetworkManager {
         var meals = [[MealsInCategory]]()
         
         for i in 0..<categories.count {
+            meals.append([])
             localCategory = categories[i]
             urlString = "https://www.themealdb.com/api/json/v1/1/filter.php?c=\(localCategory)"
             if let url = URL(string: urlString) {
@@ -42,7 +43,7 @@ class NetworkManager {
                     if let jsonMeal = try? decoder.decode(Meals.self, from: data) {
                         let localMeal = jsonMeal.meals
                         let sorted = localMeal.sorted{ $0.strMeal < $1.strMeal }
-                        meals.append(sorted)
+                        meals[i] = sorted
                         if meals.count == categories.count {
                             return meals
                         }
@@ -55,4 +56,23 @@ class NetworkManager {
         
     }
     
+    func fetchMealJSON(with urlString: String, completion: @escaping (Meal) -> Void) {
+        
+        if let url = URL(string: urlString) {
+            if let data = try? Data(contentsOf: url) {
+                let decoder = JSONDecoder()
+                
+                guard let jsonMeal = try? decoder.decode(MealDetail.self, from: data) else {
+                    return
+                }
+                let meal = jsonMeal.meals[0]
+                
+                DispatchQueue.main.async {
+                    completion(meal)
+                }
+            }
+        }
+    }
+    
 }
+
