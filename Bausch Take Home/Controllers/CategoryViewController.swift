@@ -65,7 +65,6 @@ class CategoryViewController: UITableViewController {
         
     }
     
-    
     // MARK: - Helper Functions
     
     func activityIndicator() {
@@ -182,6 +181,10 @@ extension CategoryViewController: UISearchBarDelegate {
             return false
         }
 
+        if searchText == "" {
+            searchCategories = categories
+        }
+        
         for category in searchCategories {
             categoryIndices.append(categories.firstIndex(of: category)!)
         }
