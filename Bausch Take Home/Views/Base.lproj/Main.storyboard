@@ -18,7 +18,7 @@
                         <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="prominent" placeholder="Search by category..." id="40V-cd-CoV">
                             <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <textInputTraits key="textInputTraits"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                         </searchBar>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="MealCell" rowHeight="54" id="UCU-Ok-3gq" customClass="CategoryTableViewCell" customModule="Bausch_Take_Home" customModuleProvider="target">
@@ -221,7 +221,6 @@
         <!--Split View Controller-->
         <scene sceneID="1PJ-i0-LFC">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="KHf-Ag-tTE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <splitViewController allowDoubleColumnStyle="YES" id="LsM-y5-iJM" sceneMemberID="viewController">
                     <connections>
                         <segue destination="JFl-Na-kgU" kind="relationship" relationship="masterViewController" id="Us3-oL-c0W"/>
@@ -229,6 +228,15 @@
                         <segue destination="JFl-Na-kgU" kind="relationship" relationship="compactViewController" id="gly-Wr-MLB"/>
                     </connections>
                 </splitViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KHf-Ag-tTE" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" id="MPQ-VX-sTI">
+                    <rect key="frame" x="0.0" y="0.0" width="131" height="31"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <segments>
+                        <segment title="First"/>
+                        <segment title="Second"/>
+                    </segments>
+                </segmentedControl>
             </objects>
             <point key="canvasLocation" x="-975" y="696"/>
         </scene>

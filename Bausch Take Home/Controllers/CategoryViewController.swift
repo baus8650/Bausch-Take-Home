@@ -165,13 +165,23 @@ class CategoryViewController: UITableViewController {
 
 extension CategoryViewController: UISearchBarDelegate {
     
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
         categoryIndices = [Int]()
         searchCategories = [String]()
         searchMeals = [[MealsInCategory]]()
-        searchCategories = categories.filter({$0.prefix(searchText.count) == searchText})
         
+        let searchTerms = searchText.lowercased().components(separatedBy: " ").filter { $0 != "" }
+        searchCategories = categories.filter { cat in
+            for term in searchTerms{
+                if cat.lowercased().contains(term){
+                    return true
+                }
+            }
+            return false
+        }
+
         for category in searchCategories {
             categoryIndices.append(categories.firstIndex(of: category)!)
         }
