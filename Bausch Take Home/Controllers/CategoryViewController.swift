@@ -14,6 +14,9 @@ class CategoryViewController: UITableViewController {
     
     let networkManager = NetworkManager()
     
+    var indexPath: IndexPath?
+    var offsetLocation: CGPoint?
+    
     var categories = [String]() {
         didSet {
             let queue = DispatchQueue.global()
@@ -22,6 +25,15 @@ class CategoryViewController: UITableViewController {
                     self.meals = meals
                 }
             }
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        if let scrollOffset = offsetLocation {
+            tableView.contentOffset = scrollOffset
+            tableView.reloadData()
+        } else {
+            return
         }
     }
     
@@ -51,6 +63,8 @@ class CategoryViewController: UITableViewController {
         super.viewDidLoad()
         
         navigationItem.title = "Recipes"
+        
+        
         
         activityIndicator()
         indicator.startAnimating()
@@ -144,13 +158,14 @@ class CategoryViewController: UITableViewController {
         if segue.identifier == "ListToDetail" {
             
             let detailVC = segue.destination as! DetailViewController
-            let indexPath = tableView.indexPathForSelectedRow!
+            indexPath = tableView.indexPathForSelectedRow!
+            offsetLocation = tableView.contentOffset
             let mealID: String
             
             if isSearching! {
-                mealID = searchMeals[indexPath.section][indexPath.row].idMeal
+                mealID = searchMeals[indexPath!.section][indexPath!.row].idMeal
             } else {
-                mealID = meals[indexPath.section][indexPath.row].idMeal
+                mealID = meals[indexPath!.section][indexPath!.row].idMeal
             }
             
             detailVC.urlString = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=\(mealID)"
@@ -162,54 +177,4 @@ class CategoryViewController: UITableViewController {
 
 // MARK: - Extensions
 
-extension CategoryViewController: UISearchBarDelegate {
-    
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        
-        categoryIndices = [Int]()
-        searchCategories = [String]()
-        searchMeals = [[MealsInCategory]]()
-        
-        let searchTerms = searchText.lowercased().components(separatedBy: " ").filter { $0 != "" }
-        searchCategories = categories.filter { cat in
-            for term in searchTerms{
-                if cat.lowercased().contains(term){
-                    return true
-                }
-            }
-            return false
-        }
 
-        if searchText == "" {
-            searchCategories = categories
-        }
-        
-        for category in searchCategories {
-            categoryIndices.append(categories.firstIndex(of: category)!)
-        }
-        for meal in categoryIndices {
-            searchMeals.append(meals[meal])
-        }
-        
-        isSearching = true
-        tableView.reloadData()
-        
-    }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        
-        isSearching = false
-        searchBar.text = ""
-        categoryIndices = [Int]()
-        searchCategories = [String]()
-        searchMeals = [[MealsInCategory]]()
-        
-        tableView.reloadData()
-        
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-    }
-}

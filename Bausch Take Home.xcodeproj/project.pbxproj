@@ -24,6 +24,7 @@
 		22A8CA41278D4B390083183A /* MealDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A8CA40278D4B390083183A /* MealDetail.swift */; };
 		22A8CA43278D4B530083183A /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A8CA42278D4B530083183A /* Category.swift */; };
 		22A8CA45278D4B730083183A /* MealsInCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A8CA44278D4B730083183A /* MealsInCategory.swift */; };
+		22D88C34278FB4FD00C70B4F /* CategoryViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22D88C33278FB4FD00C70B4F /* CategoryViewControllerExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		22A8CA40278D4B390083183A /* MealDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealDetail.swift; sourceTree = "<group>"; };
 		22A8CA42278D4B530083183A /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		22A8CA44278D4B730083183A /* MealsInCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealsInCategory.swift; sourceTree = "<group>"; };
+		22D88C33278FB4FD00C70B4F /* CategoryViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewControllerExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 			children = (
 				221D48A12785E5B40017D7CC /* AppDelegate.swift */,
 				221D48A32785E5B40017D7CC /* SceneDelegate.swift */,
+				22D88C30278FABDD00C70B4F /* Extensions */,
 				221D48B82785E79E0017D7CC /* Models */,
 				221D48B52785E6B70017D7CC /* Controllers */,
 				221D48B92785EDB80017D7CC /* Views */,
@@ -149,6 +152,14 @@
 				222C8B502788C9A90021D92E /* Tests.swift */,
 			);
 			path = Tests;
+			sourceTree = "<group>";
+		};
+		22D88C30278FABDD00C70B4F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				22D88C33278FB4FD00C70B4F /* CategoryViewControllerExtension.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -260,6 +271,7 @@
 				2298EC7427863C3A00AF20F8 /* DetailViewController.swift in Sources */,
 				22A8CA45278D4B730083183A /* MealsInCategory.swift in Sources */,
 				22A8CA3D278D4B090083183A /* Categories.swift in Sources */,
+				22D88C34278FB4FD00C70B4F /* CategoryViewControllerExtension.swift in Sources */,
 				22A8CA41278D4B390083183A /* MealDetail.swift in Sources */,
 				221D48A42785E5B40017D7CC /* SceneDelegate.swift in Sources */,
 				221D48B72785E6D50017D7CC /* Meal.swift in Sources */,
