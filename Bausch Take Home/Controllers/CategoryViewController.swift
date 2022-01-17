@@ -7,13 +7,44 @@
 
 import UIKit
 
+
 class CategoryViewController: UITableViewController {
     
     // MARK: - Properties
     
-    var categories = [String]()
+    let networkManager = NetworkManager()
+    
+    var indexPath: IndexPath?
+    var offsetLocation: CGPoint?
+    
+    var categories = [String]() {
+        didSet {
+            let queue = DispatchQueue.global()
+            queue.async {
+                self.networkManager.fetchMealsByCategory(with: self.categories) { meals in
+                    self.meals = meals
+                }
+            }
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        if let scrollOffset = offsetLocation {
+            tableView.contentOffset = scrollOffset
+            tableView.reloadData()
+        } else {
+            return
+        }
+    }
+    
+    var meals = [[MealsInCategory]]() {
+        didSet {
+            self.tableView.reloadData()
+            self.indicator.stopAnimating()
+            self.indicator.hidesWhenStopped = true
+        }
+    }
     var searchCategories = [String]()
-    var meals = [[MealsInCategory]]()
     var searchMeals = [[MealsInCategory]]()
     var categoryIndices = [Int]()
     var isSearching: Bool?
@@ -33,6 +64,8 @@ class CategoryViewController: UITableViewController {
         
         navigationItem.title = "Recipes"
         
+        
+        
         activityIndicator()
         indicator.startAnimating()
         searchBar.delegate = self
@@ -40,28 +73,11 @@ class CategoryViewController: UITableViewController {
         
         self.tableView.keyboardDismissMode = .onDrag
         
-        queue.async {
-            self.semaphore.wait()
-            self.fetchCategoryJSON()
-            self.semaphore.signal()
-        }
-        
-        queue.async {
-            self.semaphore.wait()
-            self.fetchMealsJSON(for: self.categories)
-            self.semaphore.signal()
-        }
-        
-        DispatchQueue.main.async {
-            self.semaphore.wait()
-            self.tableView.reloadData()
-            self.semaphore.signal()
-            self.indicator.stopAnimating()
-            self.indicator.hidesWhenStopped = true
-        }
+        self.networkManager.fetchCategories(completion: { categories in
+            self.categories = categories
+        })
         
     }
-    
     
     // MARK: - Helper Functions
     
@@ -71,66 +87,6 @@ class CategoryViewController: UITableViewController {
         indicator.style = UIActivityIndicatorView.Style.large
         indicator.center = self.view.center
         self.view.addSubview(indicator)
-        
-    }
-    
-    func fetchCategoryJSON() {
-        
-        let urlString: String
-        urlString = "https://www.themealdb.com/api/json/v1/1/categories.php"
-        
-        if let url = URL(string: urlString) {
-            if let data = try? Data(contentsOf: url) {
-                parseCategory(json: data)
-                return
-            }
-        }
-        
-        performSelector(onMainThread: #selector(showError), with: nil, waitUntilDone: false)
-    }
-    
-    func parseCategory(json: Data) {
-        
-        let decoder = JSONDecoder()
-        
-        if let jsonCategory = try? decoder.decode(Categories.self, from: json) {
-            categories = jsonCategory.categories.map { $0.strCategory }.sorted()
-        }
-        
-    }
-    
-    func fetchMealsJSON(for categories: [String]) {
-        var urlString: String
-        var localCategory: String
-        
-        for i in 0..<categories.count {
-            localCategory = categories[i]
-            urlString = "https://www.themealdb.com/api/json/v1/1/filter.php?c=\(localCategory)"
-            if let url = URL(string: urlString) {
-                if let data = try? Data(contentsOf: url) {
-                    parseMeal(json: data)
-                }
-            }
-        }
-        
-    }
-    
-    func parseMeal(json: Data) {
-        
-        let decoder = JSONDecoder()
-        if let jsonMeal = try? decoder.decode(Meals.self, from: json) {
-            let localMeal = jsonMeal.meals
-            let sorted = localMeal.sorted{ $0.strMeal < $1.strMeal }
-            meals.append(sorted)
-            
-        }
-    }
-    
-    @objc func showError() {
-        
-        let ac = UIAlertController(title: "Loading error", message: "There was a problem loading the data; please check your connection and try again.", preferredStyle: .alert)
-        ac.addAction(UIAlertAction(title: "OK", style: .default))
-        present(ac,animated: true)
         
     }
     
@@ -194,9 +150,7 @@ class CategoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        
         return 40
-        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -204,13 +158,14 @@ class CategoryViewController: UITableViewController {
         if segue.identifier == "ListToDetail" {
             
             let detailVC = segue.destination as! DetailViewController
-            let indexPath = tableView.indexPathForSelectedRow!
+            indexPath = tableView.indexPathForSelectedRow!
+            offsetLocation = tableView.contentOffset
             let mealID: String
             
             if isSearching! {
-                mealID = searchMeals[indexPath.section][indexPath.row].idMeal
+                mealID = searchMeals[indexPath!.section][indexPath!.row].idMeal
             } else {
-                mealID = meals[indexPath.section][indexPath.row].idMeal
+                mealID = meals[indexPath!.section][indexPath!.row].idMeal
             }
             
             detailVC.urlString = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=\(mealID)"
@@ -222,40 +177,4 @@ class CategoryViewController: UITableViewController {
 
 // MARK: - Extensions
 
-extension CategoryViewController: UISearchBarDelegate {
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        
-        categoryIndices = [Int]()
-        searchCategories = [String]()
-        searchMeals = [[MealsInCategory]]()
-        searchCategories = categories.filter({$0.prefix(searchText.count) == searchText})
-        
-        for i in searchCategories {
-            categoryIndices.append(categories.firstIndex(of: i)!)
-        }
-        for i in categoryIndices {
-            searchMeals.append(meals[i])
-        }
-        
-        isSearching = true
-        tableView.reloadData()
-        
-    }
-    
-    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        
-        isSearching = false
-        searchBar.text = ""
-        categoryIndices = [Int]()
-        searchCategories = [String]()
-        searchMeals = [[MealsInCategory]]()
-        
-        tableView.reloadData()
-        
-    }
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        searchBar.resignFirstResponder()
-    }
-}
+

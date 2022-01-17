@@ -10,8 +10,30 @@ import UIKit
 class DetailViewController: UIViewController {
     
     // MARK: - Properties
-    var nameLabel: String?
-    var mealID: String?
+    
+    let networkManager = NetworkManager()
+    
+    var meal: Meal? {
+        didSet {
+            DispatchQueue.main.async {
+                self.indicator.stopAnimating()
+                self.indicator.hidesWhenStopped = true
+                let image = self.meal?.strMealThumb
+                let imageURL = URL(string: image!)
+                if let imageData = try? Data(contentsOf: imageURL!) {
+                    self.mealImage.image = UIImage(data: imageData)
+                }
+                self.navigationItem.title = self.meal?.strMeal
+                self.instructionsText.text = self.meal?.strInstructions
+                self.instructionsText.backgroundColor = .secondarySystemGroupedBackground
+                self.instructionsLabel.text = "Instructions"
+                self.sectionTitle = "Ingredients"
+                self.recipe = self.meal?.generateRecipe()
+                self.ingredientsTable.reloadData()
+            }
+        }
+    }
+    
     var recipe: [Int: [String: String]]?
     var urlString: String?
     var sectionTitle = ""
@@ -20,7 +42,6 @@ class DetailViewController: UIViewController {
     
     // MARK: - IBOutlets
     
-    @IBOutlet var ingredientsLabel: UILabel!
     @IBOutlet var instructionsLabel: UILabel!
     @IBOutlet var mealImage: UIImageView!
     @IBOutlet var instructionsText: UITextView!
@@ -37,7 +58,7 @@ class DetailViewController: UIViewController {
         activityIndicator()
         indicator.startAnimating()
         
-        instructionsText.textContainerInset = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
+        instructionsText.textContainerInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         instructionsText.layer.cornerRadius = 10
 
         let queue = DispatchQueue.global()
@@ -47,7 +68,9 @@ class DetailViewController: UIViewController {
                 self.urlString = "https://www.themealdb.com/api/json/v1/1/random.php"
             }
             
-            self.fetchMealJSON(with: self.urlString!)
+            self.networkManager.fetchMealDetail(with: self.urlString!) { meal in
+                self.meal = meal
+            }
         }
     }
     
@@ -62,46 +85,6 @@ class DetailViewController: UIViewController {
         
     }
     
-    func fetchMealJSON(with urlString: String) {
-        
-        if let url = URL(string: urlString) {
-            if let data = try? Data(contentsOf: url) {
-                parseMeal(json: data)
-            }
-        }
-        
-    }
-    
-    func parseMeal(json: Data) {
-        
-        let decoder = JSONDecoder()
-        
-        if let jsonMeal = try? decoder.decode(MealDetail.self, from: json) {
-            let image = jsonMeal.meals[0].strMealThumb
-            let name = jsonMeal.meals[0].strMeal
-            let instructions = jsonMeal.meals[0].strInstructions
-            let imageURL = URL(string: image)
-            recipe = jsonMeal.meals[0].generateRecipe()
-            
-            DispatchQueue.main.async {
-                self.indicator.stopAnimating()
-                self.indicator.hidesWhenStopped = true
-                
-                if let imageData = try? Data(contentsOf: imageURL!) {
-                    self.mealImage.image = UIImage(data: imageData)
-                }
-                
-                self.navigationItem.title = name
-                self.instructionsText.text = instructions
-                self.instructionsLabel.text = "Instructions"
-                self.sectionTitle = "Ingredients"
-                self.ingredientsTable.reloadData()
-            }
-            
-        }
-        
-    }
-    
 }
 
 // MARK: - Extensions
@@ -109,9 +92,7 @@ class DetailViewController: UIViewController {
 extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        
         return 1
-        
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -119,29 +100,23 @@ extension DetailViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         return recipe?.count ?? 0
-        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: "RecipeCell", for: indexPath) as! RecipeTableViewCell
         cell.ingredientLabel.text = recipe?[indexPath.row+1]?.keys.first
         cell.measurementLabel.text = recipe?[indexPath.row+1]?.values.first
         
         return cell
-        
     }
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        
         guard let header = view as? UITableViewHeaderFooterView else { return }
         header.textLabel?.textColor = UIColor(named: "default")
         header.textLabel?.text = header.textLabel?.text?.capitalized
         header.textLabel?.font = UIFont.boldSystemFont(ofSize: 22)
         header.textLabel?.frame = header.bounds
-        
     }
     
 }

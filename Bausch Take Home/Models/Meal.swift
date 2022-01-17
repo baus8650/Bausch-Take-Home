@@ -7,29 +7,6 @@
 
 import Foundation
 
-struct Categories: Decodable {
-    var categories: [Category]
-}
-
-struct Meals: Decodable {
-    var meals: [MealsInCategory]
-}
-
-struct MealDetail: Decodable {
-    var meals: [Meal]
-}
-
-struct Category: Decodable {
-    var strCategory: String
-    var strCategoryThumb: String
-}
-
-struct MealsInCategory: Decodable {
-    var strMeal: String
-    var strMealThumb: String
-    var idMeal: String
-}
-
 struct Meal: Decodable {
     var idMeal: String
     var strMeal: String
@@ -84,7 +61,14 @@ struct Meal: Decodable {
         
         for i in 0..<ingredients.count {
             guard let localIngredient = ingredients[i] else { break }
-            guard let localMeasurement = measurements[i] else { break }
+//            var localMeasurement = ""
+//            if measurements[i] != nil {
+//                localMeasurement = measurements[i]!
+//            } else {
+//                localMeasurement = ""
+//            }
+            let localMeasurement = measurements[i] ?? ""
+//            guard let localMeasurement = measurements[i] else { break }
             if localIngredient != "" {
                 recipe[i+1] = [localIngredient: localMeasurement]
             }

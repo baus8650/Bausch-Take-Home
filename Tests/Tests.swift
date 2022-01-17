@@ -2,34 +2,233 @@
 //  Tests.swift
 //  Tests
 //
-//  Created by Tim Bausch on 1/6/22.
+//  Created by Tim Bausch on 1/7/22.
 //
 
 import XCTest
+@testable import Bausch_Take_Home
 
-class Tests: XCTestCase {
-
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+final class Tests: XCTestCase {
+    
+    let timeout: TimeInterval = 5
+    var expectation: XCTestExpectation!
+    
+    override func setUp() {
+        
+        expectation = expectation(description: "Server responds in reasonable time")
     }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
-    }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
+    
+    // MARK: - Category Tests
+    
+    func test_fetchCategories() {
+        
+        let url = URL(string: "https://www.themealdb.com/api/json/v1/1/categories.php")!
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            defer { self.expectation.fulfill() }
+            
+            XCTAssertNil(error)
+            do {
+                let response = try XCTUnwrap(response as? HTTPURLResponse)
+                XCTAssertEqual(response.statusCode, 200)
+                
+                let data = try XCTUnwrap(data)
+                XCTAssertNoThrow(
+                    try JSONDecoder().decode(Categories.self, from: data)
+                )
+            } catch { }
         }
+        .resume()
+        
+        waitForExpectations(timeout: timeout)
     }
-
+    
+    func test_fetchCategoriesCount() {
+        
+        NetworkManager().fetchCategories { categories in
+            defer { self.expectation.fulfill() }
+            XCTAssertEqual(categories.count, 14, "This API should return 14 meal categories.")
+        }
+        
+        waitForExpectations(timeout: timeout)
+    }
+    
+    // MARK: - Meals By Category Tests
+    
+    func test_fetchMealsByCategory() {
+        
+        let url = URL(string: "https://www.themealdb.com/api/json/v1/1/filter.php?c=Seafood")!
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            defer { self.expectation.fulfill() }
+            
+            XCTAssertNil(error)
+            do {
+                let response = try XCTUnwrap(response as? HTTPURLResponse)
+                XCTAssertEqual(response.statusCode, 200)
+                
+                let data = try XCTUnwrap(data)
+                XCTAssertNoThrow(
+                    try JSONDecoder().decode(Meals.self, from: data)
+                )
+            } catch { }
+        }
+        .resume()
+        
+        waitForExpectations(timeout: timeout)
+    }
+    
+    func test_fetchSeafoodMealsCount() {
+        
+        var localMeals = [[MealsInCategory]]()
+        NetworkManager().fetchMealsByCategory(with: ["Seafood"]) { mealsByCategory in
+            defer { self.expectation.fulfill() }
+            localMeals.append(mealsByCategory[0])
+            let meals = localMeals.flatMap { $0 }
+            XCTAssertEqual(meals.count, 27, "There should be 27 meals in the Seafood category")
+        }
+        
+        waitForExpectations(timeout: timeout)
+        
+    }
+    
+    func test_fetchDessertMealsCount() {
+        
+        var localMeals = [[MealsInCategory]]()
+        NetworkManager().fetchMealsByCategory(with: ["Dessert"]) { mealsByCategory in
+            defer { self.expectation.fulfill() }
+            localMeals.append(mealsByCategory[0])
+            let meals = localMeals.flatMap { $0 }
+            XCTAssertEqual(meals.count, 64, "There should be 64 meals in the Dessert category")
+        }
+        
+        waitForExpectations(timeout: timeout)
+        
+    }
+    
+    func test_fetchGoatMealsCount() {
+        
+        var localMeals = [[MealsInCategory]]()
+        NetworkManager().fetchMealsByCategory(with: ["Goat"]) { mealsByCategory in
+            defer { self.expectation.fulfill() }
+            localMeals.append(mealsByCategory[0])
+            let meals = localMeals.flatMap { $0 }
+            XCTAssertEqual(meals.count, 1, "There should be 1 meal in the Goat category")
+        }
+        
+        waitForExpectations(timeout: timeout)
+        
+    }
+    
+    // MARK: - Individual Meal Tests
+    
+    func test_fetchMealsByID() {
+        
+        let url = URL(string: "https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772")!
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            defer { self.expectation.fulfill() }
+            
+            XCTAssertNil(error)
+            do {
+                let response = try XCTUnwrap(response as? HTTPURLResponse)
+                XCTAssertEqual(response.statusCode, 200)
+                
+                let data = try XCTUnwrap(data)
+                XCTAssertNoThrow(
+                    try JSONDecoder().decode(Meals.self, from: data)
+                )
+            } catch { }
+        }
+        .resume()
+        
+        waitForExpectations(timeout: timeout)
+    }
+    
+    func test_fetchRandomMeal() {
+        
+        let url = URL(string: "https://www.themealdb.com/api/json/v1/1/random.php")!
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            defer { self.expectation.fulfill() }
+            
+            XCTAssertNil(error)
+            do {
+                let response = try XCTUnwrap(response as? HTTPURLResponse)
+                XCTAssertEqual(response.statusCode, 200)
+                
+                let data = try XCTUnwrap(data)
+                XCTAssertNoThrow(
+                    try JSONDecoder().decode(Meals.self, from: data)
+                )
+            } catch { }
+        }
+        .resume()
+        
+        waitForExpectations(timeout: timeout)
+    }
+    
+    func test_ingredientsNotNil() {
+        
+        var recipe = [Int: [String: String]]()
+        
+        NetworkManager().fetchMealDetail(
+            with: "https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772"
+        ) { meal in
+            defer { self.expectation.fulfill() }
+            
+            recipe = meal.generateRecipe()
+            for i in 1...recipe.count {
+                XCTAssertNotNil(recipe[i]?.keys.first, "No ingredient should be nil.")
+                XCTAssertNotEqual(recipe[i]!.keys.first, "", "No ingredient should have a value of blank.")
+                XCTAssertNotNil(recipe[i]!.values.first, "No measurement should be nil.")
+                XCTAssertNotEqual(recipe[i]!.values.first, "", "No measurement should have a value of blank.")
+            }
+            XCTAssertEqual(recipe.count, 9, "This recipe should containe 9 ingredient/measurement pairs.")
+        }
+        
+        waitForExpectations(timeout: timeout)
+    }
+    
+    func test_instructionsNotEmpty() {
+        
+        NetworkManager().fetchMealDetail(
+            with: "https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772"
+        ) { meal in
+            defer { self.expectation.fulfill() }
+            
+            XCTAssertNotEqual(meal.strInstructions, "", "Instructions should not be blank")
+        }
+        waitForExpectations(timeout: timeout)
+    }
+    
+    func test_ingredientsNotNilRandom() {
+        
+        var recipe = [Int: [String: String]]()
+        
+        NetworkManager().fetchMealDetail(
+            with: "https://www.themealdb.com/api/json/v1/1/random.php"
+        ) { meal in
+            defer { self.expectation.fulfill() }
+            
+            recipe = meal.generateRecipe()
+            for i in 1...recipe.count {
+                XCTAssertNotNil(recipe[i]?.keys.first, "No ingredient should be nil.")
+                XCTAssertNotEqual(recipe[i]!.keys.first, "", "No ingredient should have a value of blank.")
+                XCTAssertNotNil(recipe[i]!.values.first, "No measurement should be nil.")
+                XCTAssertNotEqual(recipe[i]!.values.first, "", "No measurement should have a value of blank.")
+            }
+        }
+        
+        waitForExpectations(timeout: timeout)
+    }
+    
+    func test_instructionsNotEmptyRandom() {
+        
+        NetworkManager().fetchMealDetail(
+            with: "https://www.themealdb.com/api/json/v1/1/random.php"
+        ) { meal in
+            defer { self.expectation.fulfill() }
+            
+            XCTAssertNotEqual(meal.strInstructions, "", "Instructions should not be blank")
+        }
+        waitForExpectations(timeout: timeout)
+    }
+    
 }
