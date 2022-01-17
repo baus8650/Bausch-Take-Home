@@ -15,6 +15,7 @@
 		221D48B72785E6D50017D7CC /* Meal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221D48B62785E6D50017D7CC /* Meal.swift */; };
 		221D48BB2785EE590017D7CC /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221D48BA2785EE590017D7CC /* CategoryTableViewCell.swift */; };
 		221D48BD2785EE910017D7CC /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 221D48BC2785EE910017D7CC /* CategoryViewController.swift */; };
+		2223FAB62795312E00412682 /* Readme.md in Resources */ = {isa = PBXBuildFile; fileRef = 2223FAB52795312E00412682 /* Readme.md */; };
 		222C8B512788C9A90021D92E /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222C8B502788C9A90021D92E /* Tests.swift */; };
 		2298EC7427863C3A00AF20F8 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298EC7327863C3A00AF20F8 /* DetailViewController.swift */; };
 		2298EC762786712A00AF20F8 /* RecipeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2298EC752786712A00AF20F8 /* RecipeTableViewCell.swift */; };
@@ -48,6 +49,7 @@
 		221D48B62785E6D50017D7CC /* Meal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meal.swift; sourceTree = "<group>"; };
 		221D48BA2785EE590017D7CC /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		221D48BC2785EE910017D7CC /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
+		2223FAB52795312E00412682 /* Readme.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Readme.md; sourceTree = "<group>"; };
 		222C8B4E2788C9A90021D92E /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		222C8B502788C9A90021D92E /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		2298EC7327863C3A00AF20F8 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
@@ -82,6 +84,7 @@
 		221D48952785E5B40017D7CC = {
 			isa = PBXGroup;
 			children = (
+				2223FAB52795312E00412682 /* Readme.md */,
 				221D48A02785E5B40017D7CC /* Bausch Take Home */,
 				222C8B4F2788C9A90021D92E /* Tests */,
 				221D489F2785E5B40017D7CC /* Products */,
@@ -245,6 +248,7 @@
 			files = (
 				221D48AE2785E5B50017D7CC /* LaunchScreen.storyboard in Resources */,
 				221D48AB2785E5B50017D7CC /* Assets.xcassets in Resources */,
+				2223FAB62795312E00412682 /* Readme.md in Resources */,
 				221D48A92785E5B40017D7CC /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
