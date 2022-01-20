@@ -11,3 +11,8 @@ struct Category: Decodable {
     var strCategory: String
     var strCategoryThumb: String
 }
+
+struct CategoryList: Decodable {
+    var categories: [Category]
+}
+

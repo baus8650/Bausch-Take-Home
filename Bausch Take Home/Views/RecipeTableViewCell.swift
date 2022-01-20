@@ -8,8 +8,8 @@
 import UIKit
 
 class RecipeTableViewCell: UITableViewCell {
-
+    
     @IBOutlet var ingredientLabel: UILabel!
     @IBOutlet var measurementLabel: UILabel!
-
+    
 }
