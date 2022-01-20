@@ -9,6 +9,8 @@ import Foundation
 
 class NetworkManager {
     
+    // MARK: - Category API Call
+    
     func fetchCategories(completion: @escaping([String]) -> Void) {
         
         let urlSession = URLSession.shared
@@ -20,7 +22,7 @@ class NetworkManager {
                 return
             }
             
-            guard let jsonCategory = try? JSONDecoder().decode(Categories.self, from: data) else {
+            guard let jsonCategory = try? JSONDecoder().decode(CategoryList.self, from: data) else {
                 return
             }
             
@@ -33,6 +35,8 @@ class NetworkManager {
         
         fetch.resume()
     }
+    
+    // MARK: - Meals By Category API Call
     
     func fetchMealsByCategory(with categories: [String], completion: @escaping ([[MealsInCategory]]) -> Void) {
         
@@ -71,6 +75,7 @@ class NetworkManager {
         }
     }
     
+    // MARK: - Meal Detail API Call
     
     func fetchMealDetail(with urlString: String, completion: @escaping (Meal) -> Void) {
         
@@ -95,7 +100,6 @@ class NetworkManager {
             
         }
         fetch.resume()
-
+        
     }
 }
-    

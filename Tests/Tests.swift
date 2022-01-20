@@ -33,7 +33,7 @@ final class Tests: XCTestCase {
                 
                 let data = try XCTUnwrap(data)
                 XCTAssertNoThrow(
-                    try JSONDecoder().decode(Categories.self, from: data)
+                    try JSONDecoder().decode(CategoryList.self, from: data)
                 )
             } catch { }
         }
