@@ -48,10 +48,6 @@
                                 </connections>
                             </tableViewCell>
                         </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="FAw-jG-haK" id="UAG-5E-Ybg"/>
-                            <outlet property="delegate" destination="FAw-jG-haK" id="jgH-OR-fBM"/>
-                        </connections>
                     </tableView>
                     <navigationItem key="navigationItem" id="cX7-1E-24V"/>
                     <connections>

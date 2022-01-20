@@ -51,7 +51,6 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
         ingredientsTable.dataSource = self
         ingredientsTable.delegate = self
         
