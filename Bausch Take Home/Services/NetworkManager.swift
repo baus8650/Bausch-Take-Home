@@ -20,7 +20,7 @@ class NetworkManager {
                 return
             }
 
-            guard let jsonCategory = try? JSONDecoder().decode(Categories.self, from: data) else {
+            guard let jsonCategory = try? JSONDecoder().decode(CategoryList.self, from: data) else {
                 return
             }
 

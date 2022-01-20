@@ -7,6 +7,20 @@
 
 import Foundation
 
+struct MealsInCategory: Decodable {
+    var strMeal: String
+    var strMealThumb: String
+    var idMeal: String
+}
+
+struct Meals: Decodable {
+    var meals: [MealsInCategory]
+}
+
+struct MealDetail: Decodable {
+    var meals: [Meal]
+}
+
 struct Meal: Decodable {
     var idMeal: String
     var strMeal: String
