@@ -11,6 +11,8 @@ import UIKit
 
 class RecipeViewModel: NSObject {
     
+    // MARK: - Properties
+    
     var networkManager: NetworkManager?
     var loadingViewController: ActivityIndicator?
     var tableDataSource: RecipeTableDataSource?
@@ -34,7 +36,10 @@ class RecipeViewModel: NSObject {
     var searchMeals = [[MealsInCategory]]()
     var categoryIndices = [Int]()
     var isSearching: Bool?
+    
     var tableView: UITableView?
+    
+    // MARK: - Initializer
     
     init(controller: UIViewController, tableView: UITableView) {
         loadingViewController = ActivityIndicator()
@@ -44,6 +49,8 @@ class RecipeViewModel: NSObject {
         super.init()
         fetchCategories()
     }
+    
+    // MARK: - Helper Functions
     
     func populateTable(categories: [String], meals: [[MealsInCategory]]) {
         tableDataSource = RecipeTableDataSource(categories: categories, meals: meals, tableView: self.tableView!)
@@ -61,6 +68,8 @@ class RecipeViewModel: NSObject {
     
     
 }
+
+// MARK: - Extensions
 
 extension RecipeViewModel: UISearchBarDelegate {
     

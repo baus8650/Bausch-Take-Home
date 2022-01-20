@@ -10,11 +10,17 @@ import UIKit
 
 class IngredientsTableDataSource: NSObject, UITableViewDataSource {
     
+    // MARK: - Properties
+    
     var recipe: [Int: [String: String]]?
+    
+    // MARK: - Initializer
     
     init(data recipe: [Int: [String: String]]) {
         self.recipe = recipe
     }
+    
+    // MARK: - TableView Data Sources
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Ingredients"

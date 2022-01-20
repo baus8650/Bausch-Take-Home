@@ -8,7 +8,7 @@
 import UIKit
 
 class CategoryTableViewCell: UITableViewCell {
-
+    
     @IBOutlet var titleLabel: UILabel!
-
+    
 }

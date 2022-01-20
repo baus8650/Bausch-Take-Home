@@ -10,18 +10,21 @@ import UIKit
 
 class RecipeTableDataSource: NSObject, UITableViewDataSource {
     
+    // MARK: - Properties
     
     var sectionArray = [String]()
     var object = [[MealsInCategory]]()
     var tableView: UITableView?
+    
+    // MARK: - Initializer
     
     init(categories: [String], meals: [[MealsInCategory]], tableView: UITableView) {
         self.sectionArray = categories
         self.object = meals
         self.tableView = tableView
     }
-
-
+    
+    // MARK: - TableView Data Source Methods
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return self.sectionArray.count

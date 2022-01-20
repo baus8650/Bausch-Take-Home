@@ -14,7 +14,7 @@ class DetailViewController: UIViewController {
     var mealViewModel: MealDetailViewModel?
     var ingrediantsTableDelegate: IngredientsTableDelegate?
     var urlString: String?
-
+    
     // MARK: - IBOutlets
     
     @IBOutlet var instructionsLabel: UILabel!
@@ -38,6 +38,8 @@ class DetailViewController: UIViewController {
         }
         setup()
     }
+    
+    // MARK: - Helper Functions
     
     func setup() {
         mealViewModel?.mealImage.bind { [weak self] mealImage in

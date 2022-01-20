@@ -16,14 +16,6 @@ class CategoryViewController: UITableViewController {
     var tableDelegate: RecipeTableDelegate?
     var offsetLocation: CGPoint?
     
-    override func viewWillAppear(_ animated: Bool) {
-        if let scrollOffset = offsetLocation {
-            self.tableView.contentOffset = scrollOffset
-            self.tableView.reloadData()
-        } else {
-            return
-        }
-    }
     
     // MARK: - IBOutlets
     
@@ -44,6 +36,16 @@ class CategoryViewController: UITableViewController {
         self.searchBar.delegate = viewModel
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if let scrollOffset = offsetLocation {
+            self.tableView.contentOffset = scrollOffset
+            self.tableView.reloadData()
+        } else {
+            return
+        }
+    }
+    
+    // MARK: - Navigation
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -64,4 +66,3 @@ class CategoryViewController: UITableViewController {
         }
     }
 }
-

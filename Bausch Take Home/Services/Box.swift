@@ -13,17 +13,17 @@ class Box<T> {
     var listener: Listener?
     
     var value: T {
-      didSet {
-        listener?(value)
-      }
+        didSet {
+            listener?(value)
+        }
     }
     
     init(_ value: T) {
-      self.value = value
+        self.value = value
     }
     
     func bind(listener: Listener?) {
-      self.listener = listener
-      listener?(value)
+        self.listener = listener
+        listener?(value)
     }
 }
