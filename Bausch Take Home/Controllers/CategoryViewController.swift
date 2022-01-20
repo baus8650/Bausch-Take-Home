@@ -12,14 +12,14 @@ class CategoryViewController: UITableViewController {
     
     // MARK: - Properties
     
-    var dataSource: RecipeTableDataSource?
+    var viewModel: RecipeViewModel?
     var tableDelegate: RecipeTableDelegate?
     var offsetLocation: CGPoint?
     
     override func viewWillAppear(_ animated: Bool) {
         if let scrollOffset = offsetLocation {
-            tableView.contentOffset = scrollOffset
-            tableView.reloadData()
+            self.tableView.contentOffset = scrollOffset
+            self.tableView.reloadData()
         } else {
             return
         }
@@ -37,14 +37,13 @@ class CategoryViewController: UITableViewController {
         navigationItem.title = "Recipes"
         
         tableDelegate = RecipeTableDelegate()
+        viewModel = RecipeViewModel(controller: self, tableView: self.tableView)
         self.tableView.delegate = tableDelegate
-        dataSource = RecipeTableDataSource(for: self.tableView, controller: self)
-        tableView.dataSource = dataSource
-        searchBar.delegate = dataSource
-        
+        self.tableView.dataSource = viewModel?.tableDataSource
         self.tableView.keyboardDismissMode = .onDrag
-        
+        self.searchBar.delegate = viewModel
     }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -55,13 +54,13 @@ class CategoryViewController: UITableViewController {
             offsetLocation = tableView.contentOffset
             let mealID: String
             
-            if dataSource?.isSearching == true {
-                mealID = (dataSource?.searchMeals[indexPath.section][indexPath.row].idMeal)!
+            if viewModel?.isSearching == true {
+                mealID = (viewModel?.searchMeals[indexPath.section][indexPath.row].idMeal)!
             } else {
-                mealID = (dataSource?.meals[indexPath.section][indexPath.row].idMeal)!
+                mealID = (viewModel?.meals[indexPath.section][indexPath.row].idMeal)!
             }
             
-            detailVC.urlString = "https://www.themealdb.com/api/json/v1/1/lookup.php?i=\(mealID)"
+            detailVC.urlString = mealID
         }
     }
 }

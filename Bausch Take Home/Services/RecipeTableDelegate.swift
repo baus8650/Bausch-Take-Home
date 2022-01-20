@@ -9,18 +9,6 @@ import Foundation
 import UIKit
 
 class RecipeTableDelegate: NSObject, UITableViewDelegate {
-    // #1
-//    weak var delegate: ViewControllerDelegate?
-    
-    // #2
-//    init(withDelegate delegate: ViewControllerDelegate) {
-//        self.delegate = delegate
-//    }
-    
-    // #3
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        self.delegate?.selectedCell(row: indexPath.row, section: indexPath.section)
-//    }
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
 
@@ -35,4 +23,5 @@ class RecipeTableDelegate: NSObject, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40
     }
+    
 }

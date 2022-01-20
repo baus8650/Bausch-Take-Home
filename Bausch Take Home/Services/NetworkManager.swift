@@ -8,7 +8,7 @@
 import Foundation
 
 class NetworkManager {
-//
+    
     func fetchCategories(completion: @escaping([String]) -> Void) {
 
         let urlSession = URLSession.shared
@@ -98,63 +98,3 @@ class NetworkManager {
 
     }
 }
-    
-
-class CategoryRequest:  NSObject {
-    
-    private let url: URL
-    
-    enum CategoryRequestError: Error {
-        case invalidResponse
-        case noData
-        case failedRequest
-        case invalidData
-    }
-    
-    
-    override init() {
-        self.url = URL(string: "https://www.themealdb.com/api/json/v1/1/categories.php")!
-    }
-    
-    func fetchCategories(completion: @escaping (Categories?, CategoryRequestError?) -> Void) {
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            DispatchQueue.main.async {
-                
-                guard error == nil else {
-                    print("Failed to fetch categories: \(error!.localizedDescription)")
-                    completion(nil, .failedRequest)
-                    return
-                }
-                
-                guard let data = data else {
-                    print("No data returned from mealdb")
-                    completion(nil, .noData)
-                    return
-                }
-                
-                guard let response = response as? HTTPURLResponse else {
-                  print("Unable to process type response")
-                  completion(nil, .invalidResponse)
-                  return
-                }
-                
-                guard response.statusCode == 200 else {
-                  print("Failure response from mealdb: \(response.statusCode)")
-                  completion(nil, .failedRequest)
-                  return
-                }
-                
-                do {
-                    let decoder = JSONDecoder()
-                    let categoryData: Categories = try decoder.decode(Categories.self, from: data)
-                    completion(categoryData, nil)
-                } catch {
-                    print("Unable to decode category response: \(error.localizedDescription)")
-                    completion(nil, .invalidData)
-                }
-            }
-        }.resume()
-    }
-    
-}
-

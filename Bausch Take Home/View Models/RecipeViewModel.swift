@@ -9,10 +9,11 @@ import Foundation
 import UIKit
 
 
-class RecipeTableDataSource: NSObject, UITableViewDataSource {
+class RecipeViewModel: NSObject {
     
     var networkManager: NetworkManager?
-    let loadingViewController: ActivityIndicator?
+    var loadingViewController: ActivityIndicator?
+    var tableDataSource: RecipeTableDataSource?
     
     var categories = [String]() {
         didSet {
@@ -24,8 +25,7 @@ class RecipeTableDataSource: NSObject, UITableViewDataSource {
     
     var meals = [[MealsInCategory]]() {
         didSet {
-            
-            self.tableView?.reloadData()
+            populateTable(categories: self.categories, meals: self.meals)
             loadingViewController?.remove()
         }
     }
@@ -34,15 +34,22 @@ class RecipeTableDataSource: NSObject, UITableViewDataSource {
     var searchMeals = [[MealsInCategory]]()
     var categoryIndices = [Int]()
     var isSearching: Bool?
-    let tableView: UITableView?
+    var tableView: UITableView?
     
-    init(for tableView: UITableView, controller: UIViewController) {
+    init(controller: UIViewController, tableView: UITableView) {
         loadingViewController = ActivityIndicator()
         controller.add(loadingViewController!)
         self.isSearching = false
         self.tableView = tableView
         super.init()
         fetchCategories()
+    }
+    
+    func populateTable(categories: [String], meals: [[MealsInCategory]]) {
+        tableDataSource = RecipeTableDataSource(categories: categories, meals: meals, tableView: self.tableView!)
+        self.tableView?.dataSource = tableDataSource
+        
+        self.tableView?.reloadData()
     }
     
     func fetchCategories() {
@@ -52,53 +59,10 @@ class RecipeTableDataSource: NSObject, UITableViewDataSource {
         }
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        
-        if isSearching == true {
-            return searchCategories.count
-        } else {
-            return categories.count
-        }
-        
-    }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        
-        if isSearching == true {
-            return searchCategories[section]
-        } else {
-            return categories[section]
-        }
-        
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        if isSearching == true {
-            return searchMeals[section].count
-        } else {
-            return meals[section].count
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: "MealCell", for: indexPath) as! CategoryTableViewCell
-        
-        if isSearching == true {
-            let title = searchMeals[indexPath.section][indexPath.row].strMeal
-            cell.titleLabel.text = title
-        } else {
-            let title = meals[indexPath.section][indexPath.row].strMeal
-            cell.titleLabel.text = title
-        }
-        
-        return cell
-        
-    }
 }
 
-extension RecipeTableDataSource: UISearchBarDelegate {
+extension RecipeViewModel: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
@@ -119,7 +83,7 @@ extension RecipeTableDataSource: UISearchBarDelegate {
         if searchText == "" {
             isSearching = false
             searchCategories = categories
-            tableView?.reloadData()
+            populateTable(categories: self.categories, meals: self.meals)
         }
         
         for category in searchCategories {
@@ -129,7 +93,7 @@ extension RecipeTableDataSource: UISearchBarDelegate {
             searchMeals.append(meals[meal])
         }
         isSearching = true
-        tableView?.reloadData()
+        populateTable(categories: self.searchCategories, meals: self.searchMeals)
         
     }
     
@@ -140,7 +104,7 @@ extension RecipeTableDataSource: UISearchBarDelegate {
         categoryIndices = [Int]()
         searchCategories = [String]()
         searchMeals = [[MealsInCategory]]()
-        tableView?.reloadData()
+        populateTable(categories: self.categories, meals: self.meals)
         
     }
     
